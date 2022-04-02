@@ -37,7 +37,7 @@ export type TypebotViewerProps = {
 
 export const TypebotViewer = ({
   typebot,
-  apiHost = 'https://typebot-viewer-4-fpazv-zp3lhvcgyn3na.vercel.app',
+  apiHost = process.env.NEXT_PUBLIC_VIEWER_URL,
   isPreview = false,
   style,
   predefinedVariables,
