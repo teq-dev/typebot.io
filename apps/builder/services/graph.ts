@@ -56,7 +56,7 @@ const computeTwoSegments = (
   sourcePosition: Coordinates,
   targetPosition: Coordinates
 ) => {
-  const segments = []
+  const segments : string[] = [];
   segments.push(`L${targetPosition.x},${sourcePosition.y}`)
   segments.push(`L${targetPosition.x},${targetPosition.y}`)
   return segments.join(' ')
@@ -67,7 +67,7 @@ const computeThreeSegments = (
   targetPosition: Coordinates,
   sourceType: 'right' | 'left'
 ) => {
-  const segments = []
+  const segments : string[] = [];
   const firstSegmentX =
     sourceType === 'right'
       ? sourcePosition.x + (targetPosition.x - sourcePosition.x) / 2
@@ -83,7 +83,7 @@ const computeFourSegments = (
   targetPosition: Coordinates,
   sourceType: 'right' | 'left'
 ) => {
-  const segments = []
+  const segments : string[] = [];
   const firstSegmentX =
     sourcePosition.x + (sourceType === 'right' ? stubLength : -stubLength)
   segments.push(`L${firstSegmentX},${sourcePosition.y}`)
@@ -102,7 +102,7 @@ const computeFiveSegments = (
   targetPosition: Coordinates,
   sourceType: 'right' | 'left'
 ) => {
-  const segments = []
+  const segments : string[] = [];
   const firstSegmentX =
     sourcePosition.x + (sourceType === 'right' ? stubLength : -stubLength)
   segments.push(`L${firstSegmentX},${sourcePosition.y}`)
