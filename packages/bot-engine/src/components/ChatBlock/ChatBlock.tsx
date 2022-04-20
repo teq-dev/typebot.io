@@ -54,7 +54,7 @@ export const ChatBlock = ({
     setCurrentTypebotId,
     pushEdgeIdInLinkedTypebotQueue,
   } = useTypebot()
-  const { resultValues, updateVariables } = useAnswers()
+  const { resultValues, updateVariables, resultId } = useAnswers()
   const [processedSteps, setProcessedSteps] = useState<Step[]>([])
   const [displayedChunks, setDisplayedChunks] = useState<ChatDisplayChunk[]>([])
 
@@ -115,6 +115,7 @@ export const ChatBlock = ({
         createEdge,
         setCurrentTypebotId,
         pushEdgeIdInLinkedTypebotQueue,
+        currentTypebotId,
       })
       nextEdgeId ? onBlockEnd(nextEdgeId, linkedTypebot) : displayNextStep()
     }
@@ -133,6 +134,7 @@ export const ChatBlock = ({
           resultValues,
           blocks: typebot.blocks,
           onNewLog,
+          resultId,
         },
       })
       nextEdgeId ? onBlockEnd(nextEdgeId) : displayNextStep()

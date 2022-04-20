@@ -2,6 +2,7 @@ import { Answer, ResultValues, VariableWithValue } from 'models'
 import React, { createContext, ReactNode, useContext, useState } from 'react'
 
 const answersContext = createContext<{
+  resultId?: string
   resultValues: ResultValues
   addAnswer: (answer: Answer) => void
   updateVariables: (variables: VariableWithValue[]) => void
@@ -11,9 +12,11 @@ const answersContext = createContext<{
 
 export const AnswersContext = ({
   children,
+  resultId,
   onNewAnswer,
   onVariablesUpdated,
 }: {
+  resultId?: string
   onNewAnswer: (answer: Answer) => void
   onVariablesUpdated?: (variables: VariableWithValue[]) => void
   children: ReactNode
@@ -34,7 +37,12 @@ export const AnswersContext = ({
 
   const updateVariables = (variables: VariableWithValue[]) =>
     setResultValues((resultValues) => {
-      const updatedVariables = [...resultValues.variables, ...variables]
+      const updatedVariables = [
+        ...resultValues.variables.filter((v) =>
+          variables.every((variable) => variable.id !== v.id)
+        ),
+        ...variables,
+      ]
       if (onVariablesUpdated) onVariablesUpdated(updatedVariables)
       return {
         ...resultValues,
@@ -45,6 +53,7 @@ export const AnswersContext = ({
   return (
     <answersContext.Provider
       value={{
+        resultId,
         resultValues,
         addAnswer,
         updateVariables,

@@ -1,10 +1,10 @@
 import { TypebotViewer } from 'bot-engine'
-import { Log } from 'db'
 import { Answer, PublicTypebot, VariableWithValue } from 'models'
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { upsertAnswer } from 'services/answer'
 import { SEO } from '../components/Seo'
-import { createLog, createResult, updateResult } from '../services/result'
+import { createResult, updateResult } from '../services/result'
 import { ErrorPage } from './ErrorPage'
 
 export type TypebotPageProps = {
@@ -20,6 +20,7 @@ export const TypebotPage = ({
   isIE,
   url,
 }: TypebotPageProps & { typebot: PublicTypebot }) => {
+  const { asPath, push } = useRouter()
   const [showTypebot, setShowTypebot] = useState(false)
   const [predefinedVariables, setPredefinedVariables] = useState<{
     [key: string]: string
@@ -31,6 +32,7 @@ export const TypebotPage = ({
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search)
+    clearQueryParams()
     const predefinedVariables: { [key: string]: string } = {}
     urlParams.forEach((value, key) => {
       predefinedVariables[key] = value
@@ -39,6 +41,11 @@ export const TypebotPage = ({
     initializeResult().then()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const clearQueryParams = () => {
+    const hasQueryParams = asPath.includes('?')
+    if (hasQueryParams) push(asPath.split('?')[0], undefined, { shallow: true })
+  }
 
   const initializeResult = async () => {
     const resultIdFromSession = getExistingResultFromSession()
@@ -74,14 +81,6 @@ export const TypebotPage = ({
     if (error) setError(error)
   }
 
-  const handleNewLog = async (
-    log: Omit<Log, 'id' | 'createdAt' | 'resultId'>
-  ) => {
-    if (!resultId) return setError(new Error('Result was not created'))
-    const { error } = await createLog(resultId, log)
-    if (error) setError(error)
-  }
-
   if (error) {
     return <ErrorPage error={error} />
   }
@@ -95,11 +94,11 @@ export const TypebotPage = ({
       {showTypebot && (
         <TypebotViewer
           typebot={typebot}
+          resultId={resultId}
           predefinedVariables={predefinedVariables}
           onNewAnswer={handleNewAnswer}
           onCompleted={handleCompleted}
           onVariablesUpdated={handleNewVariables}
-          onNewLog={handleNewLog}
         />
       )}
     </div>
