@@ -162,12 +162,18 @@ export const TypebotContext = ({
   useEffect(() => {
     if (!typebot || !currentTypebotRef.current) return
     if (typebotId !== currentTypebotRef.current.id) {
-      setLocalTypebot({ ...typebot })
+      setLocalTypebot({ ...typebot }, { updateDate: false })
       flush()
     } else if (
       new Date(typebot.updatedAt) >
       new Date(currentTypebotRef.current.updatedAt)
     ) {
+      console.log(
+        'Incoming typebot',
+        typebot,
+        'Current typebot',
+        currentTypebotRef.current
+      )
       setLocalTypebot({ ...typebot })
     }
 
@@ -176,10 +182,7 @@ export const TypebotContext = ({
 
   const saveTypebot = async (options?: { disableMutation: boolean }) => {
     if (!currentTypebotRef.current || !typebot) return
-    const typebotToSave = {
-      ...currentTypebotRef.current,
-      updatedAt: new Date().toISOString(),
-    }
+    const typebotToSave = { ...currentTypebotRef.current }
     if (dequal(omit(typebot, 'updatedAt'), omit(typebotToSave, 'updatedAt')))
       return
     setIsSavingLoading(true)

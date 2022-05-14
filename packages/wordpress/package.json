@@ -2,11 +2,11 @@
   "name": "wordpress",
   "version": "2.1.8",
   "main": "index.js",
-  "repository": "https://github.com/typebot-io/wordpress.git",
+  "repository": "https://github.com/baptisteArno/typebot.io",
   "author": "baptisteArno",
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
-    "@prettier/plugin-php": "^0.18.3"
+    "@prettier/plugin-php": "^0.18.4"
   },
   "scripts": {
     "deploy": "yarn copy && yarn commit",
