@@ -130,7 +130,9 @@ const executeRedirect = (
   const tempLink = document.createElement('a')
   tempLink.href = sanitizeUrl(parseVariables(variables)(step.options?.url))
   tempLink.setAttribute('target', step.options.isNewTab ? '_blank' : '_self')
-  tempLink.click()
+  setTimeout(function() {
+    tempLink.click()
+  }, 1000);
   return step.outgoingEdgeId
 }
 
