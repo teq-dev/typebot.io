@@ -7,6 +7,7 @@ import {
 } from 'typebot-js'
 import parserBabel from 'prettier/parser-babel'
 import prettier from 'prettier/standalone'
+import { isDefined } from 'utils'
 
 const parseStringParam = (fieldName: string, fieldValue?: string) =>
   fieldValue ? `${fieldName}: "${fieldValue}",` : ``
@@ -14,7 +15,7 @@ const parseStringParam = (fieldName: string, fieldValue?: string) =>
 const parseNonStringParam = (
   fieldName: string,
   fieldValue?: number | boolean
-) => (fieldValue ? `${fieldName}: ${fieldValue},` : ``)
+) => (isDefined(fieldValue) ? `${fieldName}: ${fieldValue},` : ``)
 
 const parseCustomDomain = (domain?: string): string =>
   parseStringParam('customDomain', domain)
@@ -88,7 +89,7 @@ export const parseInitContainerCode = ({
       backgroundColor,
     })
   return prettier.format(
-    `initContainer("typebot-container", {
+    `Typebot.initContainer("typebot-container", {
     url: "${url}",${bgColorString}${customDomainString}${hiddenVariablesString}
   });`,
     { parser: 'babel', plugins: [parserBabel] }
@@ -110,7 +111,7 @@ export const parseInitPopupCode = ({
     })
   const { delayString } = parsePopupParams({ delay })
   return prettier.format(
-    `var typebotCommands = initPopup({url: "${url}",${delayString}${bgColorString}${customDomainString}${hiddenVariablesString}});`,
+    `var typebotCommands = Typebot.initPopup({url: "${url}",${delayString}${bgColorString}${customDomainString}${hiddenVariablesString}});`,
     { parser: 'babel', plugins: [parserBabel] }
   )
 }
@@ -134,7 +135,7 @@ export const parseInitBubbleCode = ({
     proactiveMessage,
   })
   return prettier.format(
-    `var typebotCommands = initBubble({url: "${url}",${bgColorString}${customDomainString}${hiddenVariablesString}${proactiveMessageString}${buttonString}});`,
+    `var typebotCommands = Typebot.initBubble({url: "${url}",${bgColorString}${customDomainString}${hiddenVariablesString}${proactiveMessageString}${buttonString}});`,
     { parser: 'babel', plugins: [parserBabel] }
   )
 }
