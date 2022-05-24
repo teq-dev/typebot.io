@@ -98,11 +98,16 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
           user: userFromDb,
         }
       },
-      signIn: async ({ account }) => {
+      signIn: async ({ account, profile }) => {
         const requiredGroups = getRequiredGroups(account.provider)
         if (requiredGroups.length > 0) {
           const userGroups = await getUserGroups(account)
           return checkHasGroups(userGroups, requiredGroups)
+        }
+        const allowedEmails = getAllowedGithubEmails(account.provider)
+        if (allowedEmails.length > 0) {
+          const userEmailFromProvider: string = profile.email!
+          return checkAllowedGithubEmails(userEmailFromProvider, allowedEmails)
         }
         return true
       },
@@ -159,7 +164,19 @@ const getRequiredGroups = (provider: string): string[] => {
   }
 }
 
+const getAllowedGithubEmails = (provider: string): string[] => {
+  switch (provider) {
+    case 'github':
+      return process.env.GITHUB_ALLOWED_EMAILS?.split(',') || []
+    default:
+      return []
+  }
+}
+
 const checkHasGroups = (userGroups: string[], requiredGroups: string[]) =>
   userGroups?.some((userGroup) => requiredGroups?.includes(userGroup))
+
+const checkAllowedGithubEmails = (userEmailFromProvider: string, allowedEmails: string[]) =>
+  allowedEmails.includes(userEmailFromProvider)
 
 export default withSentry(handler)
